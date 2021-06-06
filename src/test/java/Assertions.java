@@ -17,7 +17,7 @@ public class Assertions{
      */
     @Then("Verify Subscriptions pane fields are displayed correctly")
     public void verify_subscriptions_pane_fields_are_displayed_correctly() {
-        String  subscriptionsAssertMessage = " is expected to be displayed on Overview tab in Subscriptions pane.";
+        String subscriptionsAssertMessage = " is expected to be displayed on Overview tab in Subscriptions pane.";
 
         WebElement title = DefaultBaseTest.driver.findElement(By.xpath("//fdl-card[@label=\"Subscriptions\"]//h4[contains(text(),'Subscriptions')]"));
         assertTrue(title.isDisplayed(), "Subscriptions title".concat(subscriptionsAssertMessage));
