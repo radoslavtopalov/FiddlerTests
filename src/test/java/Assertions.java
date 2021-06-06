@@ -7,6 +7,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
 public class Assertions{
@@ -68,5 +69,45 @@ public class Assertions{
         WebElement saveCardsButton = DefaultBaseTest.driver.findElement(By.xpath("//ul[@role=\"tablist\"]//a[@href=\"/cards\"]//ancestor::li"));
         Boolean isSaveCardsOpen = Boolean.parseBoolean(saveCardsButton.getAttribute("aria-selected"));
         assertTrue(isSaveCardsOpen, "Save Cards tab is expected to be open.");
+    }
+
+    @Then("Verify ‘Process Order’ page is opened and annual payment is selected by default")
+    public void verify_page_is_opened_and_annual_payment_is_selected_by_default() {
+        WebDriverWait wait = new WebDriverWait(DefaultBaseTest.driver, 5);
+
+        String processOrderPageTitle = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@class=\"k-hbox title-and-button\"]//h2"))).getText();
+        assertThat(processOrderPageTitle).contains("Process Order");
+
+        WebElement payAnnuallyButton = DefaultBaseTest.driver.findElement(
+                By.xpath("//div[@class=\"choose-plan k-vbox\"]//div[contains(text(),'Pay Annually')]//ancestor::div[@class=\"period-radio-btn selected-plan\"]"));
+        String payAnnuallyButtonAttribute = payAnnuallyButton.getAttribute("class");
+        assertThat(payAnnuallyButtonAttribute).doesNotContain("unselected");
+    }
+
+    @Then("Upgrade with Monthly subscription with Seats: {int} and verify Total Charge is correct")
+    public void upgrade_with_monthly_subscription_with_seats_and_verify_total_charge_is_correct(int seatsNumber) {
+        WebElement payMonthlyButton = DefaultBaseTest.driver.findElement(
+                By.xpath("//div[@class=\"choose-plan k-vbox\"]//div[contains(text(),'Pay Monthly')]//ancestor::div[@class=\"period-radio-btn unselected-plan\"]"));
+        payMonthlyButton.click();
+
+        WebElement seatsInputField = DefaultBaseTest.driver.findElement(By.xpath("//div[@class=\"choose-plan k-vbox\"]//input[@role=\"spinbutton\"]"));
+        seatsInputField.clear();
+        seatsInputField.sendKeys(String.valueOf(seatsNumber));
+
+        double subscriptionPriceOnSubscriptionDetails = ActSteps.get_subscription_price_per_period_on_process_order_page_on_subscription_details_step();
+        subscriptionPriceOnSubscriptionDetails = subscriptionPriceOnSubscriptionDetails * seatsNumber;
+
+        DefaultBaseTest.driver.findElement(By.xpath("//button[contains(text(),'Next')]")).click();
+
+        String totalCharge = DefaultBaseTest.driver.findElement(By.cssSelector("div.k-vbox.payment-details > div.k-hbox >h3 > span > span")).getText();
+        double totalChargeDouble = Double.parseDouble(totalCharge.replace('$', ' '));
+
+        assertEquals(totalChargeDouble, subscriptionPriceOnSubscriptionDetails, "Total Charge is expected to be calculated correctly.");
+    }
+
+    @Then("Verify the card details form is displayed")
+    public void verify_the_card_details_form_is_displayed() {
+        WebElement paymentDetailsForm = DefaultBaseTest.driver.findElement(By.xpath("//div[@class=\"k-vbox details-container\"]"));
+        assertTrue(paymentDetailsForm.isDisplayed(), "Payment Details Form is expected to be displayed.");
     }
 }
