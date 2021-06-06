@@ -42,8 +42,6 @@ public class Assertions{
             assertTrue(secondRowElements.get(i).isDisplayed(), secondRowExpectedElements[i].concat(subscriptionsAssertMessage));
             assertThat(secondRowElements.get(i).getText()).contains(secondRowExpectedElements[i]);
         }
-        WebElement manageSubscription = DefaultBaseTest.driver.findElement(By.xpath("//fdl-card[@label=\"Subscriptions\"]//a"));
-        assertTrue(GeneralHelper.isClickable(manageSubscription), manageSubscription.getText().concat(" is expected to be clickable."));
         WebElement fiddlerImage = DefaultBaseTest.driver.findElement(By.xpath("//fdl-card[@label=\"Subscriptions\"]//a"));
         assertTrue(fiddlerImage.isDisplayed(), "Fiddler image".concat(subscriptionsAssertMessage));
     }

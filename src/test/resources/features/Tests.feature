@@ -1,5 +1,5 @@
 @Regression @Sanity
-Feature: Tests 
+Feature: Tests
 
   Scenario: Login and verify Subscriptions pane fields are displayed correctly
     Given Website is opened
