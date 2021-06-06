@@ -1,11 +1,12 @@
 import io.cucumber.java.en.Then;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 public class Assertions{
@@ -44,5 +45,28 @@ public class Assertions{
         assertTrue(GeneralHelper.isClickable(manageSubscription), manageSubscription.getText().concat(" is expected to be clickable."));
         WebElement fiddlerImage = DefaultBaseTest.driver.findElement(By.xpath("//fdl-card[@label=\"Subscriptions\"]//a"));
         assertTrue(fiddlerImage.isDisplayed(), "Fiddler image".concat(subscriptionsAssertMessage));
+    }
+
+    @Then("Verify subscription page is opened")
+    public void verify_subscription_page_is_opened() {
+        WebDriverWait wait = new WebDriverWait(DefaultBaseTest.driver, 5);
+
+        boolean isURLCorrect = wait.until(ExpectedConditions.urlContains("/subscription"));
+        assertTrue(isURLCorrect, "Subscription page URL is expected to ends with /subscription .");
+
+        String subscriptionPageTitle = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@class=\"view-subscription\"]//h2"))).getText();
+        assertThat(subscriptionPageTitle).contains("Fiddler Everywhere Subscription");
+    }
+
+    @Then("Verify ‘Saved Cards’ tab is opened")
+    public void verify_saved_cards_tab_is_opened() {
+        WebDriverWait wait = new WebDriverWait(DefaultBaseTest.driver, 5);
+
+        boolean isURLCorrect = wait.until(ExpectedConditions.urlContains("/cards"));
+        assertTrue(isURLCorrect, "Save Cards tab URL is expected to ends with /subscription .");
+
+        WebElement saveCardsButton = DefaultBaseTest.driver.findElement(By.xpath("//ul[@role=\"tablist\"]//a[@href=\"/cards\"]//ancestor::li"));
+        Boolean isSaveCardsOpen = Boolean.parseBoolean(saveCardsButton.getAttribute("aria-selected"));
+        assertTrue(isSaveCardsOpen, "Save Cards tab is expected to be open.");
     }
 }
