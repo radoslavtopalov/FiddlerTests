@@ -1,6 +1,7 @@
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
+import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -14,7 +15,7 @@ public class DefaultBaseTest {
 
     @Before
     public void setup(){
-        System.setProperty("webdriver.chrome.driver", "C:\\DevelpmentProgramFiles\\chromedriver.exe");
+        WebDriverManager.chromedriver().setup();
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--start-maximized", "--disable-extensions");
         options.addArguments("--disable-notifications");
